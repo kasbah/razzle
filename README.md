@@ -33,7 +33,7 @@ Below is a list of commands you will probably find useful.
 
 ### `npm start` or `yarn start`
 
-Runs the project in development mode.  
+Runs the project in development mode.
 You can view your application at `http://localhost:3000`
 
 The page will reload if you make edits.
@@ -222,6 +222,7 @@ Razzle comes with [Create React App's ESLint configuration](https://github.com/f
 * `process.env.RAZZLE_PUBLIC_DIR`: Path to the public directory.
 * `process.env.RAZZLE_ASSETS_MANIFEST`: Path to a file containing compiled asset outputs
 * `process.env.REACT_BUNDLE_PATH`: Relative path to where React will be bundled during development. Unless you are modifying the output path of your webpack config, you can safely ignore this. This path is used by `react-error-overlay` and webpack to power up the fancy runtime error iframe. For example, if you are using common chunks and an extra entry to create a vendor bundle with stuff like react, react-dom, react-router, etc. called `vendor.js`, and you've changed webpack's output to `[name].js` in development, you'd want to set this environment variable to `/static/js/vendor.js`. If you do not make this change, nothing bad will happen, you will simply not get the cool error overlay when there are runtime errors. You'll just see them in the console. Note: This does not impact production bundling.
+- `process.env.RAZZLE_ENV_PREFIX`: Prefix for custom build-time environment variables, default is `RAZZLE_`
 * `process.env.VERBOSE`: default is false, setting this to true will not clear the console when you make edits in development (useful for debugging).
 * `process.env.PORT`: default is `3000`, unless changed
 * `process.env.HOST`: default is `0.0.0.0`
@@ -229,8 +230,7 @@ Razzle comes with [Create React App's ESLint configuration](https://github.com/f
 * `process.env.BUILD_TARGET`: either `'client'` or `'server'`
 * `process.env.PUBLIC_PATH`: Only in used in `razzle build`. You can alter the `webpack.config.output.publicPath` of the client assets (bundle, css, and images). This is useful if you plan to serve your assets from a CDN. Make sure to _include_ a trailing slash (e.g. `PUBLIC_PATH=https://cdn.example.com/`). If you are using React and altering the public path, make sure to also [include the `crossorigin` attribute](https://reactjs.org/docs/cdn-links.html#why-the-crossorigin-attribute) on your `<script>` tag in `src/server.js`.
 
-You can create your own custom build-time environment variables. They must start
-with `RAZZLE_`. Any other variables except the ones listed above will be ignored to avoid accidentally exposing a private key on the machine that could have the same name. Changing any environment variables will require you to restart the development server if it is running.
+You can create your own custom build-time environment variables. By default they must start with `RAZZLE_` but you can override this by setting `RAZZLE_ENV_PREFIX`. Any other variables except the ones listed above will be ignored to avoid accidentally exposing a private key on the machine that could have the same name. Changing any environment variables will require you to restart the development server if it is running.
 
 These environment variables will be defined for you on `process.env`. For example, having an environment variable named `RAZZLE_SECRET_CODE` will be exposed in your JS as `process.env.RAZZLE_SECRET_CODE`.
 
@@ -285,11 +285,11 @@ server
           assets.client.css
             ? `<link rel="stylesheet" href="${assets.client.css}">`
             : ''
-        } 
+        }
     </head>
     <body>
-        <div id="root">${markup}</div> 
-        <script>window.env = ${serialize(runtimeConfig)};</script>                   
+        <div id="root">${markup}</div>
+        <script>window.env = ${serialize(runtimeConfig)};</script>
         <script src="${assets.client.js}" defer crossorigin></script>
     </body>
 </html>`
